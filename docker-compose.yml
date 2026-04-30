@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  portifolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portifolio.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.portifolio.entrypoints=websecure"
+      - "traefik.http.routers.portifolio.tls=true"
+      - "traefik.http.services.portifolio.loadbalancer.server.port=80"
+    environment:
+      - NODE_ENV=production
+    # Do NOT publish ports — Traefik will route traffic
+    # ports: ['80:80']
+    volumes:
+      - ./:/app:ro
+
+# Usage: set DOMAIN env var in Coolify or your deploy environment (example: mysite.example.com)
